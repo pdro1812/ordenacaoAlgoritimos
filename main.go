@@ -1,17 +1,11 @@
 package main
 
 import "fmt"
+import    "net/http"
+
 
 func main() {
-	arr := []int{23, 1, 10, 5, 2}
-	
-
-	duracao, comp, mov := quick(arr, 0, len(arr)-1)
-	for _, v := range arr {
-			println(v)
-		}
-
-    fmt.Printf("Tempo de execução: %v\n", duracao)
-    fmt.Printf("comparações: %d, movimentacoes: %d\n", comp, mov)
-
+    http.HandleFunc("/", homeHandler)
+    fmt.Println("Servidor rodando em http://localhost:8080")
+    http.ListenAndServe(":8080", nil)
 }
