@@ -30,7 +30,6 @@ func particionar(arr []int, inicio, fim int) int {
 func quick (arr[]int, comeco, fim int)(time.Duration, int, int){
 	inicio:= time.Now()
 		
-
 	if comeco<fim{
 		p :=particionar(arr, comeco, fim)
 		quick(arr, comeco, p-1)

@@ -2,59 +2,273 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Algoritmos de Ordenação</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Comparar Algoritmos</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 1rem;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+
+    select, input[type="radio"] {
+      accent-color: #0077cc;
+    }
+
+    select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #f9f9f9;
+      transition: border 0.2s;
+    }
+
+    select:focus {
+      border-color: #0077cc;
+      outline: none;
+    }
+
+    .radio-group {
+      margin-bottom: 1rem;
+    }
+
+    .radio-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      color: #444;
+      cursor: pointer;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    #resultado {
+      margin-top: 2rem;
+      display: none;
+    }
+
+    .cards {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      flex: 1 1 260px;
+      background: #ffffff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .card h3 {
+      color: #0077cc;
+      margin-bottom: 0.5rem;
+    }
+
+    .card ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .comparativo {
+      margin-top: 1rem;
+      background: #f1f8e9;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .comparativo h3 {
+      color: #33691e;
+      margin-bottom: 0.5rem;
+    }
+
+    .comparativo ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<body>
+  <div class="container">
+    <h1>Comparar Algoritmos</h1>
 
-  <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Algoritmos de Ordenação</h1>
+    <select id="alg1">
+      <option>Selection-Sort</option>
+      <option>Insertion-Sort</option>
+      <option>Bubble-Sort</option>
+      <option>Shell-Sort</option>
+      <option>Quick-Sort</option>
+    </select>
 
-    <div class="grid grid-cols-2 gap-4 mb-4">
-      <div>
-        <label for="alg1" class="block text-sm font-medium text-gray-700">Algoritmo 1</label>
-        <select id="alg1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-          <option>Bubble-Sort</option>
-          <option>Insertion-Sort</option>
-          <option>Selection-Sort</option>
-          <option>Quick-Sort</option>
-        </select>
-      </div>
-      <div>
-        <label for="alg2" class="block text-sm font-medium text-gray-700">Algoritmo 2</label>
-        <select id="alg2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-          <option>Insertion-Sort</option>
-          <option>Bubble-Sort</option>
-          <option>Selection-Sort</option>
-          <option>Quick-Sort</option>
-        </select>
-      </div>
+    <select id="alg2">
+      <option>Selection-Sort</option>
+      <option>Insertion-Sort</option>
+      <option>Bubble-Sort</option>
+      <option>Shell-Sort</option>
+      <option>Quick-Sort</option>
+    </select>
+
+    <div class="radio-group">
+      <strong>Quantidade de Números:</strong>
+      <label><input type="radio" name="nos" value="1000"> 1000</label>
+      <label><input type="radio" name="nos" value="10000"> 10000</label>
+      <label><input type="radio" name="nos" value="100000"> 100000</label>
+      <label><input type="radio" name="nos" value="1000000"> 1000000</label>
+
+
     </div>
 
-    <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700 mb-1">Quantidade de nós</label>
-      <div class="space-y-1">
-        <label class="flex items-center"><input type="radio" name="nos" class="mr-2">1000</label>
-        <label class="flex items-center"><input type="radio" name="nos" class="mr-2">10000</label>
-        <label class="flex items-center"><input type="radio" name="nos" class="mr-2">100000</label>
-        <label class="flex items-center"><input type="radio" name="nos" class="mr-2">1000000</label>
-      </div>
+    <div class="radio-group">
+      <strong>Disposição dos Dados:</strong>
+      <label><input type="radio" name="disposicao"> Ordem Aleatória</label>
+      <label><input type="radio" name="disposicao"> Ordenados - ordem decrescente</label>
+      <label><input type="radio" name="disposicao"> Ordenados - ordem crescente</label>
     </div>
 
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-700 mb-1">Disposição dos dados</label>
-      <div class="space-y-1">
-        <label class="flex items-center"><input type="radio" name="disposicao" class="mr-2">Ordenados - ordem crescente</label>
-        <label class="flex items-center"><input type="radio" name="disposicao" class="mr-2">Ordenados - ordem decrescente</label>
-        <label class="flex items-center"><input type="radio" name="disposicao" class="mr-2" checked>Ordem Aleatória</label>
+    <button onclick="enviarDados()">Executar</button>
+
+    <div id="resultado">
+      <div class="cards">
+        <div id="alg1Resultado" class="card"></div>
+        <div id="alg2Resultado" class="card"></div>
       </div>
+
+      <div id="relatorioComparativo" class="comparativo"></div>
     </div>
-
-    <button class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition">Executar</button>
-
-   
   </div>
 
+  <script>
+    const algoritmoMap = {
+      "Selection-Sort": 1,
+      "Insertion-Sort": 2,
+      "Bubble-Sort": 3,
+      "Shell-Sort": 4,
+      "Quick-Sort": 5,
+    };
+
+    const disposicaoMap = {
+      "Ordem Aleatória": 1,
+      "Ordenados - ordem decrescente": 2,
+      "Ordenados - ordem crescente": 3,
+    };
+
+    function enviarDados() {
+      const alg1Texto = document.getElementById("alg1").value;
+      const alg2Texto = document.getElementById("alg2").value;
+
+      const alg1 = algoritmoMap[alg1Texto];
+      const alg2 = algoritmoMap[alg2Texto];
+
+      const quantidadeStr = document.querySelector('input[name="nos"]:checked')?.value;
+      const disposicaoTexto = document.querySelector('input[name="disposicao"]:checked')?.parentElement.innerText.trim();
+      const disposicao = disposicaoMap[disposicaoTexto];
+
+      if (!alg1 || !alg2 || !quantidadeStr || !disposicao) {
+        alert("Por favor, preencha todos os campos corretamente.");
+        return;
+      }
+
+      const dados = {
+        Algoritmo1: alg1,
+        Algoritmo2: alg2,
+        Quantidade: parseInt(quantidadeStr),
+        Disposicao: disposicao
+      };
+
+      fetch('/executar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Resposta do Go:', data);
+        mostrarResultado(data);
+      })
+      .catch(err => {
+        console.error('Erro ao enviar os dados:', err);
+        alert("Erro ao enviar os dados. Veja o console.");
+      });
+    }
+
+    function mostrarResultado(data) {
+      document.getElementById("resultado").style.display = 'block';
+
+      document.getElementById("alg1Resultado").innerHTML = `
+        <h3>Algoritmo 1</h3>
+        <ul>
+          <li><strong>Duração:</strong> ${data.Algoritmo1.Duracao} ms</li>
+          <li><strong>Comparações:</strong> ${data.Algoritmo1.Comparacoes}</li>
+          <li><strong>Movimentações:</strong> ${data.Algoritmo1.Movimentacoes}</li>
+        </ul>
+      `;
+
+      document.getElementById("alg2Resultado").innerHTML = `
+        <h3>Algoritmo 2</h3>
+        <ul>
+          <li><strong>Duração:</strong> ${data.Algoritmo2.Duracao} ms</li>
+          <li><strong>Comparações:</strong> ${data.Algoritmo2.Comparacoes}</li>
+          <li><strong>Movimentações:</strong> ${data.Algoritmo2.Movimentacoes}</li>
+        </ul>
+      `;
+
+      document.getElementById("relatorioComparativo").innerHTML = `
+        <h3>Relatório Comparativo</h3>
+        <ul>
+          <li><strong>Tempo:</strong> ${data.Relatorio.MelhorTempo}</li>
+          <li><strong>Comparações:</strong> ${data.Relatorio.MenosComparacoes}</li>
+          <li><strong>Movimentações:</strong> ${data.Relatorio.MenosMovimentacoes}</li>
+        </ul>
+      `;
+    }
+  </script>
 </body>
 </html>
