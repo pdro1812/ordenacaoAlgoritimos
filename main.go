@@ -28,6 +28,20 @@ type ResponseData struct {
 	Relatorio  RelatorioComparativo
 }
 
+// Struct para a resposta JSON, com a Duração em milissegundos (int64)
+type ResultadoJSON struct {
+    Duracao      int64 `json:"Duracao"`
+    Comparacoes  int   `json:"Comparacoes"`
+    Movimentacoes int   `json:"Movimentacoes"`
+}
+
+// Struct principal da resposta JSON
+type ResponseDataJSON struct {
+    Algoritmo1 ResultadoJSON `json:"Algoritmo1"`
+    Algoritmo2 ResultadoJSON `json:"Algoritmo2"`
+    Relatorio  RelatorioComparativo `json:"Relatorio"`
+}
+
 func executarAlgoritmo(num int, arr []int) (time.Duration, int, int) {
 	switch num {
 	case 1:
@@ -57,77 +71,85 @@ type RelatorioComparativo struct {
 
 
 func executarHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-		return
-	}
+    if r.Method != "POST" {
+        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+        return
+    }
 
-	var dados RequestData
-	err := json.NewDecoder(r.Body).Decode(&dados)
-	if err != nil {
-		http.Error(w, "Erro ao decodificar JSON", http.StatusBadRequest)
-		return
-	}
+    var dados RequestData
+    err := json.NewDecoder(r.Body).Decode(&dados)
+    if err != nil {
+        http.Error(w, "Erro ao decodificar JSON", http.StatusBadRequest)
+        return
+    }
 
-	fmt.Printf("Dados recebidos: Algoritmo1: %d, Algoritmo2: %d, Quantidade: %d, Disposicao: %d\n",
-		dados.Algoritmo1, dados.Algoritmo2, dados.Quantidade, dados.Disposicao)
+    fmt.Printf("Dados recebidos: Algoritmo1: %d, Algoritmo2: %d, Quantidade: %d, Disposicao: %d\n",
+        dados.Algoritmo1, dados.Algoritmo2, dados.Quantidade, dados.Disposicao)
 
-	arrayOriginal := size(dados.Quantidade, dados.Disposicao)
-	array1 := make([]int, len(arrayOriginal))
-	array2 := make([]int, len(arrayOriginal))
-	copy(array1, arrayOriginal)
-	copy(array2, arrayOriginal)
+    arrayOriginal := size(dados.Quantidade, dados.Disposicao)
+    array1 := make([]int, len(arrayOriginal))
+    array2 := make([]int, len(arrayOriginal))
+    copy(array1, arrayOriginal)
+    copy(array2, arrayOriginal)
 
-	dur1, comp1, mov1 := executarAlgoritmo(dados.Algoritmo1, array1)
-	dur2, comp2, mov2 := executarAlgoritmo(dados.Algoritmo2, array2)
+    dur1, comp1, mov1 := executarAlgoritmo(dados.Algoritmo1, array1)
+    dur2, comp2, mov2 := executarAlgoritmo(dados.Algoritmo2, array2)
 
-	fmt.Println("Resultado da comparação:")
-	fmt.Printf("Algoritmo 1 - Duração: %v | Comparações: %d | Movimentações: %d\n", dur1, comp1, mov1)
-	fmt.Printf("Algoritmo 2 - Duração: %v | Comparações: %d | Movimentações: %d\n", dur2, comp2, mov2)
+    fmt.Println("Resultado da comparação:")
+    fmt.Printf("Algoritmo 1 - Duração: %v | Comparações: %d | Movimentações: %d\n", dur1, comp1, mov1)
+    fmt.Printf("Algoritmo 2 - Duração: %v | Comparações: %d | Movimentações: %d\n", dur2, comp2, mov2)
 
-	// Relatório comparativo
-	relatorio := RelatorioComparativo{}
+    // Relatório comparativo (seu código aqui continua o mesmo)
+    relatorio := RelatorioComparativo{}
+    if dur1 < dur2 {
+        relatorio.MelhorTempo = "Algoritmo 1 foi mais eficiente em tempo."
+    } else if dur2 < dur1 {
+        relatorio.MelhorTempo = "Algoritmo 2 foi mais eficiente em tempo."
+    } else {
+        relatorio.MelhorTempo = "Ambos algoritmos tiveram a mesma eficiência em tempo."
+    }
+    if comp1 < comp2 {
+        relatorio.MenosComparacoes = "Algoritmo 1 realizou menos comparações."
+    } else if comp2 < comp1 {
+        relatorio.MenosComparacoes = "Algoritmo 2 realizou menos comparações."
+    } else {
+        relatorio.MenosComparacoes = "Ambos algoritmos realizaram a mesma quantidade de comparações."
+    }
+    if mov1 < mov2 {
+        relatorio.MenosMovimentacoes = "Algoritmo 1 realizou menos movimentações."
+    } else if mov2 < mov1 {
+        relatorio.MenosMovimentacoes = "Algoritmo 2 realizou menos movimentações."
+    } else {
+        relatorio.MenosMovimentacoes = "Ambos algoritmos realizaram a mesma quantidade de movimentações."
+    }
 
-	// Tempo
-	if dur1 < dur2 {
-		relatorio.MelhorTempo = ("Algoritmo 1 foi mais eficiente em tempo.")
-	} else if dur2 < dur1 {
-		relatorio.MelhorTempo = ("Algoritmo 2 foi mais eficiente em tempo.")
-	} else {
-		relatorio.MelhorTempo = "Ambos algoritmos tiveram a mesma eficiência em tempo."
-	}
+    // ***** INÍCIO DA CORREÇÃO *****
 
-	// Comparações
-	if comp1 < comp2 {
-		relatorio.MenosComparacoes = ("Algoritmo 1 realizou menos comparações.")
-	} else if comp2 < comp1 {
-		relatorio.MenosComparacoes = ("Algoritmo 2 realizou menos comparações.")
-	} else {
-		relatorio.MenosComparacoes = "Ambos algoritmos realizaram a mesma quantidade de comparações."
-	}
+    // Criar a resposta para o JSON usando os structs corretos
+    respostaJSON := ResponseDataJSON{
+        Algoritmo1: ResultadoJSON{
+            Duracao:      dur1.Milliseconds(), // CONVERTE PARA MILISSEGUNDOS
+            Comparacoes:  comp1,
+            Movimentacoes: mov1,
+        },
+        Algoritmo2: ResultadoJSON{
+            Duracao:      dur2.Milliseconds(), // CONVERTE PARA MILISSEGUNDOS
+            Comparacoes:  comp2,
+            Movimentacoes: mov2,
+        },
+        Relatorio: relatorio,
+    }
 
-	// Movimentações
-	if mov1 < mov2 {
-		relatorio.MenosMovimentacoes = ("Algoritmo 1 realizou menos movimentações.")
-	} else if mov2 < mov1 {
-		relatorio.MenosMovimentacoes = ("Algoritmo 2 realizou menos movimentações.")
-	} else {
-		relatorio.MenosMovimentacoes = "Ambos algoritmos realizaram a mesma quantidade de movimentações."
-	}
+    // ***** FIM DA CORREÇÃO *****
 
-	resposta := ResponseData{
-		Algoritmo1: Resultado{Duracao: dur1, Comparacoes: comp1, Movimentacoes: mov1},
-		Algoritmo2: Resultado{Duracao: dur2, Comparacoes: comp2, Movimentacoes: mov2},
-		Relatorio:  relatorio,
-	}
+    fmt.Println("Relatório Comparativo:")
+    fmt.Println(relatorio.MelhorTempo)
+    fmt.Println(relatorio.MenosComparacoes)
+    fmt.Println(relatorio.MenosMovimentacoes)
 
-		fmt.Println("Relatório Comparativo:")
-	fmt.Println(relatorio.MelhorTempo)
-	fmt.Println(relatorio.MenosComparacoes)
-	fmt.Println(relatorio.MenosMovimentacoes)
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(resposta)
+    w.Header().Set("Content-Type", "application/json")
+    // Enviar a struct formatada para JSON
+    json.NewEncoder(w).Encode(respostaJSON)
 }
 
 
@@ -146,33 +168,6 @@ type TesteData struct {
 	Array     []int
 }
 
-func testarHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var dados TesteData
-	err := json.NewDecoder(r.Body).Decode(&dados)
-	if err != nil {
-		http.Error(w, "Erro ao decodificar JSON", http.StatusBadRequest)
-		return
-	}
-
-	fmt.Printf("Teste recebido: Algoritmo: %d, Array: %v\n", dados.Algoritmo, dados.Array)
-
-	arrayCopia := make([]int, len(dados.Array))
-	copy(arrayCopia, dados.Array)
-
-	dur, comp, mov := executarAlgoritmo(dados.Algoritmo, arrayCopia)
-
-	fmt.Printf("Resultado do teste - Duração: %v | Comparações: %d | Movimentações: %d\n", dur, comp, mov)
-
-	resposta := Resultado{Duracao: dur, Comparacoes: comp, Movimentacoes: mov}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(resposta)
-}
 
 
 func main() {

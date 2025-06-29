@@ -245,7 +245,7 @@
       document.getElementById("alg1Resultado").innerHTML = `
         <h3>Algoritmo 1</h3>
         <ul>
-          <li><strong>Duração:</strong> ${data.Algoritmo1.Duracao} ms</li>
+          <li><strong>Duração:</strong> ${data.Algoritmo1.Duracao} ms (${(data.Algoritmo1.Duracao / 1000).toFixed(3)} s)</li>
           <li><strong>Comparações:</strong> ${data.Algoritmo1.Comparacoes}</li>
           <li><strong>Movimentações:</strong> ${data.Algoritmo1.Movimentacoes}</li>
         </ul>
@@ -254,7 +254,7 @@
       document.getElementById("alg2Resultado").innerHTML = `
         <h3>Algoritmo 2</h3>
         <ul>
-          <li><strong>Duração:</strong> ${data.Algoritmo2.Duracao} ms</li>
+          <li><strong>Duração:</strong> ${data.Algoritmo2.Duracao} ms (${(data.Algoritmo2.Duracao / 1000).toFixed(3)} s)</li>
           <li><strong>Comparações:</strong> ${data.Algoritmo2.Comparacoes}</li>
           <li><strong>Movimentações:</strong> ${data.Algoritmo2.Movimentacoes}</li>
         </ul>
